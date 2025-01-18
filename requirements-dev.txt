@@ -1,0 +1,2 @@
+setuptools~=75.8
+twine~=6.0

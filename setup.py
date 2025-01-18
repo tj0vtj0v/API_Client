@@ -1,7 +1,7 @@
-from distutils.core import setup
+from setuptools import setup
 
 setup(
-    name='API_Client',
+    name='tj0vtj0v_API_Client',
     packages=[''],
     version='1.1',
     license='GNU',
