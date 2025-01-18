@@ -3,13 +3,12 @@ from distutils.core import setup
 setup(
     name='API_Client',
     packages=[''],
-    version='1.0',
+    version='1.1',
     license='GNU',
     description='API Client, which automatically authenticates and refreshes',
     author='tj0vtj0v',
     author_email='burdorftjorven@gmail.com',
     url='https://github.com/tj0vtj0v/API_Client',
-    download_url='https://github.com/tj0vtj0v/API_Client/archive/refs/tags/Beta.tar.gz',
     keywords=['Connector', 'REST', 'CRUD', 'Private'],
     install_requires=['requests'],
     classifiers=[
