@@ -2,8 +2,8 @@ from setuptools import setup
 
 setup(
     name='tj0vtj0v_API_Client',
-    packages=[''],
-    version='1.1',
+    packages=['API_Client'],
+    version='1.2',
     license='GNU',
     description='API Client, which automatically authenticates and refreshes',
     author='tj0vtj0v',

@@ -33,7 +33,7 @@ Or install directly from the source:
 Here's an example of how to use the `API_Client`:
 
 ```python
-from api_client import APIClient, Client_Exception
+from API_Client.api_client import APIClient, Client_Exception
 
 # Initialize the client
 client = APIClient(
@@ -63,7 +63,7 @@ except Client_Exception as e:
 Using the `API_Client` with a Context Manager:
 
 ```python
-from api_client import APIClient
+from API_Client.api_client import APIClient
 
 # Initialize the client
 with APIClient(
