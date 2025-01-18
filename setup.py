@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='API_Client',
-    packages=['API_Client'],
+    packages=[''],
     version='1.0',
     license='GNU',
     description='API Client, which automatically authenticates and refreshes',
@@ -13,11 +13,14 @@ setup(
     keywords=['Connector', 'REST', 'CRUD', 'Private'],
     install_requires=['requests'],
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
-        'Topic :: Software Development :: Build Tools',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
-        'Programming Language :: Python :: 3.11',
+        'Natural Language :: English',
+        'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.12',
-    ],
+        'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
+        'Topic :: Software Development :: Build Tools',
+        'Topic :: Software Development :: Libraries :: Python Modules'
+    ]
 )
