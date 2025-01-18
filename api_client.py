@@ -3,17 +3,22 @@ import logging
 import requests
 
 
+class Client_Exception(Exception):
+    def __init__(self, response) -> None:
+        self.response = response
+
+
 class APIClient:
     def __init__(
-            self, api_url: str,
-            login_suffix: str,
+            self, base_url: str,
+            auth_endpoint: str,
             username: str,
             password: str,
-            refresh_suffix: str = None
+            refresh_endpoint: str = None
     ) -> None:
-        self.__api_url = api_url
-        self.__login_suffix = login_suffix
-        self.__refresh_suffix = refresh_suffix
+        self.__base_url = base_url
+        self.__auth_endpoint = auth_endpoint
+        self.__refresh_endpoint = refresh_endpoint
         self.__username = username
         self.__password = password
 
@@ -25,6 +30,7 @@ class APIClient:
 
     def __exit__(self, exc_type, exc_value, exc_traceback) -> None:
         self.__access_token = None
+        del self
 
     def __login(self) -> str:
         credentials = {
@@ -33,13 +39,13 @@ class APIClient:
         }
 
         try:
-            if self.__refresh_suffix is not None:
-                response = self.__session.post(f"{self.__api_url}{self.__refresh_suffix}")
+            if self.__refresh_endpoint is not None:
+                response = self.__session.post(f"{self.__base_url}{self.__refresh_endpoint}")
 
                 if response.status_code == 202:
                     return response.json().get("access_token")
 
-            response = self.__session.post(f"{self.__api_url}{self.__login_suffix}", data=credentials)
+            response = self.__session.post(f"{self.__base_url}{self.__auth_endpoint}", data=credentials)
 
             if response.status_code == 202:
                 return response.json().get("access_token")
@@ -49,16 +55,16 @@ class APIClient:
             return self.__login()
 
         logging.critical(
-            f"failed to authenticate at {self.__api_url}{self.__login_suffix} with username={self.__username}"
+            f"failed to authenticate at {self.__base_url}{self.__auth_endpoint} with username={self.__username}"
         )
-        raise Exception(response.status_code)
+        raise Client_Exception(response)
 
     def post(self, url: str, data: dict, retry: bool = False) -> dict:
         headers = {
             "Authorization": f"Bearer {self.__access_token}"
         }
 
-        response = requests.post(f"{self.__api_url}/{url}", json=data, headers=headers)
+        response = requests.post(f"{self.__base_url}/{url}", json=data, headers=headers)
 
         if response.status_code == 201:
             return response.json()
@@ -68,7 +74,7 @@ class APIClient:
             return self.post(url, data, True)
 
         logging.warning(f"adding entry with data={data} at '{url}' failed: {response.status_code} - {response.reason}")
-        raise Exception(response.status_code)
+        raise Client_Exception(response)
 
     def post_all(self, url: str, data: list[dict]) -> list[dict]:
         responses = []
@@ -83,29 +89,29 @@ class APIClient:
 
         return responses
 
-    def get_data(self, url: str, retry: bool = False) -> dict | list[dict]:
+    def get(self, url: str, retry: bool = False) -> dict | list[dict]:
         headers = {
             "Authorization": f"Bearer {self.__access_token}"
         }
 
-        response = requests.get(f"{self.__api_url}/{url}", headers=headers)
+        response = requests.get(f"{self.__base_url}/{url}", headers=headers)
 
         if response.status_code == 200:
             return response.json()
 
         if response.status_code == 401 and not retry:
             self.__access_token = self.__login()
-            return self.get_data(url, True)
+            return self.get(url, True)
 
         logging.warning(f"getting data at '{url}' failed: {response.status_code} - {response.reason}")
-        raise Exception(response.status_code)
+        raise Client_Exception(response)
 
     def delete(self, url: str, retry: bool = False) -> None:
         headers = {
             "Authorization": f"Bearer {self.__access_token}"
         }
 
-        response = requests.delete(f"{self.__api_url}/{url}", headers=headers)
+        response = requests.delete(f"{self.__base_url}/{url}", headers=headers)
 
         if response.status_code == 204:
             return
@@ -116,7 +122,7 @@ class APIClient:
 
         logging.warning(
             f"deleting data at '{url}' failed: {response.status_code} - {response.reason}")
-        raise Exception(response.status_code)
+        raise Client_Exception(response)
 
     def delete_all(self, urls: list[str]) -> list:
         responses = []
