@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name='tj0vtj0v_API_Client',
     packages=['API_Client'],
-    version='1.2',
+    version='1.2.1',
     license='GNU',
     description='API Client, which automatically authenticates and refreshes',
     author='tj0vtj0v',

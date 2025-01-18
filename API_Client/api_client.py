@@ -40,12 +40,12 @@ class APIClient:
 
         try:
             if self.__refresh_endpoint is not None:
-                response = self.__session.post(f"{self.__base_url}{self.__refresh_endpoint}")
+                response = self.__session.put(f"{self.__base_url}{self.__refresh_endpoint}")
 
                 if response.status_code == 202:
                     return response.json().get("access_token")
 
-            response = self.__session.post(f"{self.__base_url}{self.__auth_endpoint}", data=credentials)
+            response = self.__session.put(f"{self.__base_url}{self.__auth_endpoint}", data=credentials)
 
             if response.status_code == 202:
                 return response.json().get("access_token")
